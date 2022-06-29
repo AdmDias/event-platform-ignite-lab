@@ -1,31 +1,30 @@
-import { gql, useMutation } from "@apollo/client";
 import { useState, FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
+import { useCreateSubscriberMutation } from "../graphql/generated";
 import { Logo } from "../components/Logo";
 
-const CREATE_SUBSCRIBER_MUTATION = gql`
-    mutation createSubscriber ($name: String!, $email: String!) {
-        createSubscriber(data: {name: $name, email: $email}) {
-            id
-        }
-    }
-`
 
 export function Subscribe (){
+    const navigate = useNavigate()
+
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     
-    const [createSubscriber] = useMutation(CREATE_SUBSCRIBER_MUTATION)
+    const [createSubscriber, { loading }] = useCreateSubscriberMutation()
 
-    function handleSubscribe(event: FormEvent) {
+    async function handleSubscribe(event: FormEvent) {
         event.preventDefault();
-        console.log(name, email)
-        createSubscriber({
+        
+        await createSubscriber({
             variables: {
                 name,
                 email,
             }
         })
-        // MINUTO 45
+
+        //await new Promise(resolve => setTimeout(resolve, 5000));
+
+        navigate('/event')
     }
 
     return (
@@ -65,9 +64,16 @@ export function Subscribe (){
                         />
 
                         <button
-                            className="mt-4 bg-green-500 uppercase py-4 rounded font-bold text-sm hover:bg-green-700 transition-colors"
+                            className="flex justify-center items-center gap-2 mt-4 bg-green-500 uppercase py-4 rounded font-bold text-sm hover:bg-green-700 transition-colors disabled:opacity-50"
                             type="submit"
+                            disabled={loading}
                         >
+                            { loading && (
+                                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            )}
                             Garanta minha vaga
                         </button>
                     </form>
