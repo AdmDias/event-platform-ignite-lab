@@ -1,9 +1,9 @@
-import { StyleSheet } from "react-native"
+import { StyleSheet, Platform, StatusBar } from "react-native"
 
 export const layout = StyleSheet.create({
     safeArea: {
         flex: 1, 
-        // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
     },
     container: {
         flex: 1,
@@ -19,13 +19,12 @@ export const layout = StyleSheet.create({
         paddingLeft: 24,
         paddingRight: 24,
     },
-    
 })
 
 export const styles = StyleSheet.create({
-    navigation: {
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center"
+    title: {
+        color: "#FFF",
+        fontSize: 26,
+        fontWeight: "bold"
     }
 })

@@ -4,14 +4,42 @@ import SafeAreaView from 'react-native-safe-area-view';
 import { EventLogo, bgBlur, bgCodeSnippet, reactJSIcon } from '../../utils/assets'
 import { layout, styles } from './styles'
 import { Footer } from "../Footer"
+import { gql, useMutation } from "@apollo/client";
+
+
+const CREATE_SUBSCRIBER_MUTATION = gql`
+    mutation CreateSubscriber ($name: String!, $email: String!) {
+        createSubscriber(data: { name: $name, email: $email }) {
+            id
+        }
+    }
+`
+
 
 export function Subscribe({ navigation }: any) {
 
     const [usernameHover, setUserNameHover] = useState(false)
     const [useremailHover, setUserEmailHover] = useState(false)
     
-    const [userName, setUserName] = useState<string>('')
-    const [userEmail, setUserEmail] = useState<string>('')
+    const [name, setName] = useState<string>('')
+    const [email, setEmail] = useState<string>('')
+
+    const [createSubscriber, { loading }] = useMutation(CREATE_SUBSCRIBER_MUTATION)
+
+    async function handleSubscribe() {
+        createSubscriber({
+            variables: {
+                name,
+                email
+            }
+        //}).then(({ data }) => {
+        //    setId(data.createSubscriber['id'])
+        }).catch((error) => console.log(error.message))
+
+        await new Promise((resolve) => setTimeout((resolve), 2000))
+
+        navigation.navigate('Platform')
+    }
 
     return (
         <SafeAreaView style={layout.safeArea}>
@@ -54,8 +82,8 @@ export function Subscribe({ navigation }: any) {
                                     placeholderTextColor="#8D8D99"
                                     onFocus={() => setUserNameHover(true)}
                                     onBlur={() => setUserNameHover(false)}
-                                    value={userName}
-                                    onChangeText={(value) => setUserName(value)}
+                                    value={name}
+                                    onChangeText={(value) => setName(value)}
                                 />
 
                                 {/*  
@@ -71,13 +99,14 @@ export function Subscribe({ navigation }: any) {
                                     placeholderTextColor="#8D8D99"
                                     onFocus={() => setUserEmailHover(true)}
                                     onBlur={() => setUserEmailHover(false)}
-                                    value={userEmail}
-                                    onChangeText={(value) => setUserEmail(value)}
+                                    value={email}
+                                    onChangeText={(value) => setEmail(value)}
                                 />
 
                                 <TouchableOpacity 
                                     style={styles.btnSubmit}
-                                    onPress={() => navigation.navigate('Platform') }
+                                    onPress={handleSubscribe}
+                                    disabled={loading}
                                 >
                                     <Text style={{ color: "#FFF", fontWeight: "bold" }}>GARANTIR MINHA VAGA</Text>
                                 </TouchableOpacity>
