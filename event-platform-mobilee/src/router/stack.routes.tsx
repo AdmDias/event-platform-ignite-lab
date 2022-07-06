@@ -1,8 +1,8 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../@types/RootStackParams';
 
-import { Platform } from "../components/Platform";
-import { Subscribe } from "../components/Subscribe";
+import { Platform } from "../screens/Platform";
+import { Subscribe } from "../screens/Subscribe";
 
 const { Navigator, Screen } = createNativeStackNavigator<RootStackParamList>();
 

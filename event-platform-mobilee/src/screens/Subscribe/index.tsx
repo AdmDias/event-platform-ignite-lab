@@ -1,20 +1,11 @@
 import { useState } from "react"
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Image, ImageBackground } from "react-native"
-import SafeAreaView from 'react-native-safe-area-view';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Image, ImageBackground, Alert } from "react-native"
 import { EventLogo, bgBlur, bgCodeSnippet, reactJSIcon } from '../../utils/assets'
+import { useCreateSubscriberMutation } from "../../graphql/generated";
+import { Footer } from "../../components/Footer"
+import SafeAreaView from 'react-native-safe-area-view';
+
 import { layout, styles } from './styles'
-import { Footer } from "../Footer"
-import { gql, useMutation } from "@apollo/client";
-
-
-const CREATE_SUBSCRIBER_MUTATION = gql`
-    mutation CreateSubscriber ($name: String!, $email: String!) {
-        createSubscriber(data: { name: $name, email: $email }) {
-            id
-        }
-    }
-`
-
 
 export function Subscribe({ navigation }: any) {
 
@@ -24,21 +15,25 @@ export function Subscribe({ navigation }: any) {
     const [name, setName] = useState<string>('')
     const [email, setEmail] = useState<string>('')
 
-    const [createSubscriber, { loading }] = useMutation(CREATE_SUBSCRIBER_MUTATION)
+    const [createSubscriber, { loading }] = useCreateSubscriberMutation()
 
     async function handleSubscribe() {
-        createSubscriber({
+
+        await createSubscriber({
             variables: {
                 name,
                 email
-            }
-        //}).then(({ data }) => {
-        //    setId(data.createSubscriber['id'])
-        }).catch((error) => console.log(error.message))
+            },
+            onCompleted(data) {
+                if (data) navigation.navigate('Platform')
+            },
+            onError(error) {
+                Alert.alert("Erro", error.message)
+            },
+        })
 
-        await new Promise((resolve) => setTimeout((resolve), 2000))
-
-        navigation.navigate('Platform')
+        //await new Promise((resolve) => setTimeout((resolve), 2000))
+        
     }
 
     return (

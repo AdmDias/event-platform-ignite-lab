@@ -1,16 +1,13 @@
 import { useState } from "react";
 import { ScrollView, View, Text, TouchableOpacity } from "react-native";
-
 import { EventLogo } from "../../utils/assets/svg/EventLogo";
 import { List, X } from "phosphor-react-native";
-
+import SafeAreaView from "react-native-safe-area-view";
 import { layout, styles } from './styles' 
 
-import SafeAreaView from "react-native-safe-area-view";
-
-import { Video } from "./Video";
-import { Sidenav } from "../Sidenav";
-import { Footer } from "../Footer";
+import { Video } from "../../components/Video";
+import { Sidenav } from "../../components/Sidenav";
+import { Footer } from "../../components/Footer";
 
 /*import { RootStackParamList } from "../../@types/RootStackParams";
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -44,7 +41,10 @@ export function Platform(/*{ navigation }: Props*/){
                   </View>
               </View>
               <View style={layout.content}>
-                <Video />
+                <Video
+                  ytVideoID={"dCb4nMEyH_4"}
+                  //ytVideoID={null}
+                />
                 {
                   isMenuOpen && <Sidenav />
                 }
