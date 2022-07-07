@@ -44,7 +44,7 @@ export function Platform(){
                   lessonSlug={currentSlug}
                 />
                 <Sidenav
-                  scrollRef = {scrollRef}
+                  scrollViewRef = {scrollRef}
                   isSideNavOpen={isSideNavOpen}
                   onOpenSideNav={setIsSideNavOpen}
                   onChangeCurrentSlug={setCurrentSlug}

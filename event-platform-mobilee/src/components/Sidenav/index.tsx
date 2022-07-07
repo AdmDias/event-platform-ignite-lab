@@ -5,13 +5,13 @@ import { styles } from "./styles"
 
 
 interface SidenavProps {
-    scrollRef: any;
+    scrollViewRef: any;
     isSideNavOpen: boolean;
     onOpenSideNav: (display: boolean) => void;
     onChangeCurrentSlug: (slug: string) => void;
 }
 
-export function Sidenav({ isSideNavOpen, scrollRef, onOpenSideNav, onChangeCurrentSlug } : SidenavProps) {
+export function Sidenav({ isSideNavOpen, scrollViewRef, onOpenSideNav, onChangeCurrentSlug } : SidenavProps) {
 
     const { data, loading } = useGetLessonsQuery()
 
@@ -43,7 +43,7 @@ export function Sidenav({ isSideNavOpen, scrollRef, onOpenSideNav, onChangeCurre
                                             onPress={() => {
                                                 onChangeCurrentSlug(lesson.slug)
                                                 onOpenSideNav(false)
-                                                scrollRef.current.scrollTo({ y: 0, animated: true });
+                                                scrollViewRef.current.scrollTo({ y: 0, animated: true });
                                             }}
                                         />
                                     )
