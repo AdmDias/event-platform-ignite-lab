@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ScrollView, View, Text, TouchableOpacity } from "react-native";
 import { EventLogo } from "../../utils/assets/svg/EventLogo";
 import { List, X } from "phosphor-react-native";
@@ -11,13 +11,14 @@ import { Footer } from "../../components/Footer";
 
 
 export function Platform(){
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-
+  const [isSideNavOpen, setIsSideNavOpen] = useState(false)
   const [currentSlug, setCurrentSlug] = useState('') //useState('nlw-return-impulse-stage-01')
+ 
+  const scrollRef = useRef<any>();
 
   return (
     <SafeAreaView style={layout.safeArea}>
-      <ScrollView>
+      <ScrollView ref={scrollRef}>
           <View style={layout.container}>
 
               <View style={layout.header}>
@@ -27,11 +28,11 @@ export function Platform(){
                     <Text style={{ fontSize: 14, color: "#E1E1E6" }}>Aulas</Text>
 
                     <TouchableOpacity 
-                      onPress={() => setIsMenuOpen(!isMenuOpen)}
                       style={{ padding: 4 }}
+                      onPress={() => setIsSideNavOpen(!isSideNavOpen) }
                     >
                       {
-                        isMenuOpen ? <X size={32} color="#81D8F7" /> : <List size={32} color="#81D8F7" />
+                        isSideNavOpen ? <X size={32} color="#81D8F7" /> : <List size={32} color="#81D8F7" />
                       }
                         
                     </TouchableOpacity>
@@ -42,13 +43,12 @@ export function Platform(){
                 <Video
                   lessonSlug={currentSlug}
                 />
-                {
-                  isMenuOpen && <Sidenav onChangeCurrentSlug={setCurrentSlug}/>
-                }
-                {/* 
-                  Check 'isMenuOpen' performance
-                  Add setIsMenuOpen as prop to 'Sidenav' component 
-                */}
+                <Sidenav
+                  scrollRef = {scrollRef}
+                  isSideNavOpen={isSideNavOpen}
+                  onOpenSideNav={setIsSideNavOpen}
+                  onChangeCurrentSlug={setCurrentSlug}
+                />
               </View>
               <Footer />
           </View>

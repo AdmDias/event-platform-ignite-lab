@@ -5,15 +5,20 @@ import { styles } from "./styles"
 
 
 interface SidenavProps {
+    scrollRef: any;
+    isSideNavOpen: boolean;
+    onOpenSideNav: (display: boolean) => void;
     onChangeCurrentSlug: (slug: string) => void;
 }
 
-export function Sidenav({ onChangeCurrentSlug } : SidenavProps) {
+export function Sidenav({ isSideNavOpen, scrollRef, onOpenSideNav, onChangeCurrentSlug } : SidenavProps) {
 
     const { data, loading } = useGetLessonsQuery()
 
+    const setDisplay = isSideNavOpen ? 'flex' : 'none'
+
     return (
-        <View style={styles.sidenav}>
+        <View style={[styles.sidenav, { display: setDisplay } ]}>
             <ScrollView nestedScrollEnabled>
                 {
                     loading ? (
@@ -35,7 +40,11 @@ export function Sidenav({ onChangeCurrentSlug } : SidenavProps) {
                                             type={lesson.lessonType}
                                             slug={lesson.slug}
                                             //updateSlug={onChangeCurrentSlug}
-                                            onPress={() => onChangeCurrentSlug(lesson.slug)}
+                                            onPress={() => {
+                                                onChangeCurrentSlug(lesson.slug)
+                                                onOpenSideNav(false)
+                                                scrollRef.current.scrollTo({ y: 0, animated: true });
+                                            }}
                                         />
                                     )
                                 })
