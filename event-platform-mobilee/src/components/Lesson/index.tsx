@@ -1,26 +1,29 @@
-import { View, Text, TouchableOpacity, Alert } from "react-native"
+import { View, Text, TouchableOpacity, TouchableOpacityProps, Alert } from "react-native"
 import { CheckCircle, Lock } from "phosphor-react-native"
 import { format, isPast } from "date-fns";
 import ptBR from 'date-fns/locale/pt-BR'
 
 import { styles } from "./styles"
 
-interface LessonProps {
+interface LessonProps extends TouchableOpacityProps{
     type: 'live' | 'class';
     availableAt: Date;
     title: string;
     slug: string;
 }
 
-export function Lesson(props: LessonProps) {
-    const isLessonAvailable = isPast(props.availableAt)
+export function Lesson({ type, availableAt, title, slug, ...props}: LessonProps) {
+    const isLessonAvailable = isPast(availableAt)
     
-    const availableDateFormatted = format(props.availableAt, "EEEE' • 'd' de 'MMMM' • 'k'h'mm", {
+    const availableDateFormatted = format(availableAt, "EEEE' • 'd' de 'MMMM' • 'k'h'mm", {
         locale: ptBR
     })
     
     return (
-        <TouchableOpacity style={{ marginTop: 24 }}>
+        <TouchableOpacity 
+            style={{ marginTop: 24 }} 
+            {...props}
+        >
             <Text style={styles.releaseDataLesson}>
                 { availableDateFormatted }
             </Text>
@@ -48,12 +51,12 @@ export function Lesson(props: LessonProps) {
                     </View>
                     <View style={styles.typeLesson} >
                         <Text style={{ fontSize: 14, fontWeight: "bold", color: "#00B37E" }}>
-                            { props.type === 'live' ? 'AO VIVO' : 'AULA PRÁTICA' }
+                            { type === 'live' ? 'AO VIVO' : 'AULA PRÁTICA' }
                         </Text>
                     </View>
                 </View>
                 <Text style={styles.titleLesson}>
-                    { props.title }
+                    { title }
                 </Text>
             </View>  
         </TouchableOpacity>

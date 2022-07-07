@@ -3,7 +3,12 @@ import { useGetLessonsQuery } from "../../graphql/generated"
 import { Lesson } from "../Lesson"
 import { styles } from "./styles"
 
-export function Sidenav() {
+
+interface SidenavProps {
+    onChangeCurrentSlug: (slug: string) => void;
+}
+
+export function Sidenav({ onChangeCurrentSlug } : SidenavProps) {
 
     const { data, loading } = useGetLessonsQuery()
 
@@ -29,6 +34,8 @@ export function Sidenav() {
                                             availableAt={new Date(lesson.availableAt)}
                                             type={lesson.lessonType}
                                             slug={lesson.slug}
+                                            //updateSlug={onChangeCurrentSlug}
+                                            onPress={() => onChangeCurrentSlug(lesson.slug)}
                                         />
                                     )
                                 })

@@ -16,7 +16,7 @@ interface VideoProps {
 export function Video( props : VideoProps ) {
     const { data } = useGetLessonBySlugQuery({
         variables: {
-            slug: "nlw-return-impulse-stage-04",
+            slug: props.lessonSlug,
         }
     })
 

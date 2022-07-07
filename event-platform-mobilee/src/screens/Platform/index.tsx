@@ -9,13 +9,11 @@ import { Video } from "../../components/Video";
 import { Sidenav } from "../../components/Sidenav";
 import { Footer } from "../../components/Footer";
 
-/*import { RootStackParamList } from "../../@types/RootStackParams";
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Subscribe'>*/
+export function Platform(){
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
-export function Platform(/*{ navigation }: Props*/){
-  const [isMenuOpen, setIsMenuOpen] = useState(false) 
+  const [currentSlug, setCurrentSlug] = useState('') //useState('nlw-return-impulse-stage-01')
 
   return (
     <SafeAreaView style={layout.safeArea}>
@@ -42,12 +40,15 @@ export function Platform(/*{ navigation }: Props*/){
               </View>
               <View style={layout.content}>
                 <Video
-                  ytVideoID={"dCb4nMEyH_4"}
-                  //ytVideoID={null}
+                  lessonSlug={currentSlug}
                 />
                 {
-                  isMenuOpen && <Sidenav />
+                  isMenuOpen && <Sidenav onChangeCurrentSlug={setCurrentSlug}/>
                 }
+                {/* 
+                  Check 'isMenuOpen' performance
+                  Add setIsMenuOpen as prop to 'Sidenav' component 
+                */}
               </View>
               <Footer />
           </View>

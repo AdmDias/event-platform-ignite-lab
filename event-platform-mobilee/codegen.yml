@@ -1,4 +1,4 @@
-schema: https://api.graphcms.com/
+schema: https://api-sa-east-1.graphcms.com/
 documents: './src/graphql/**/*.graphql'
 generates:
   ./src/graphql/generated.ts:
