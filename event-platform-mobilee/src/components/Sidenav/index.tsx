@@ -1,5 +1,6 @@
 import { View, Text, ScrollView } from "react-native"
-import { useGetLessonsQuery } from "../../graphql/generated"
+import { GetLessonsQuery } from "../../graphql/generated"
+import { isPast } from "date-fns";
 import { Lesson } from "../Lesson"
 import { styles } from "./styles"
 
@@ -7,13 +8,20 @@ import { styles } from "./styles"
 interface SidenavProps {
     scrollViewRef: any;
     isSideNavOpen: boolean;
+    lessons: GetLessonsQuery | undefined;
+    isLoadingLessons: boolean;
     onOpenSideNav: (display: boolean) => void;
     onChangeCurrentSlug: (slug: string) => void;
 }
 
-export function Sidenav({ isSideNavOpen, scrollViewRef, onOpenSideNav, onChangeCurrentSlug } : SidenavProps) {
-
-    const { data, loading } = useGetLessonsQuery()
+export function Sidenav({ 
+    isSideNavOpen, 
+    scrollViewRef, 
+    lessons,
+    isLoadingLessons,
+    onOpenSideNav, 
+    onChangeCurrentSlug 
+} : SidenavProps) {
 
     const setDisplay = isSideNavOpen ? 'flex' : 'none'
 
@@ -21,7 +29,7 @@ export function Sidenav({ isSideNavOpen, scrollViewRef, onOpenSideNav, onChangeC
         <View style={[styles.sidenav, { display: setDisplay } ]}>
             <ScrollView nestedScrollEnabled>
                 {
-                    loading ? (
+                    isLoadingLessons ? (
                         <Text style={styles.title}> Carregando... </Text>
                     ):(
                         <>
@@ -31,7 +39,8 @@ export function Sidenav({ isSideNavOpen, scrollViewRef, onOpenSideNav, onChangeC
 
                             <View style={styles.lessonsContainer}/> 
                             {
-                                data?.lessons.map((lesson) => {
+                                lessons?.lessons.map((lesson) => {
+                                    const isLessonAvailable = isPast(new Date(lesson.availableAt))
                                     return (
                                         <Lesson 
                                             key={lesson.id}
@@ -39,7 +48,8 @@ export function Sidenav({ isSideNavOpen, scrollViewRef, onOpenSideNav, onChangeC
                                             availableAt={new Date(lesson.availableAt)}
                                             type={lesson.lessonType}
                                             slug={lesson.slug}
-                                            //updateSlug={onChangeCurrentSlug}
+                                            isLessonAvailable={isLessonAvailable}
+                                            disabled={!isLessonAvailable}
                                             onPress={() => {
                                                 onChangeCurrentSlug(lesson.slug)
                                                 onOpenSideNav(false)

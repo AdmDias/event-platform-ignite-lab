@@ -38,7 +38,7 @@ export function Video( props : VideoProps ) {
     
     if (!data || !data.lesson){
         return (
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, alignItems: 'center' }}>
                 <Text style={{ fontSize: 18, fontWeight: "bold", color: "#E1E1E6"}}>Carregando...</Text>
             </View>
         )
@@ -100,16 +100,16 @@ export function Video( props : VideoProps ) {
                             </View>
                         </View>
                     )
-                }
-
-                
+                } 
 
                 <TouchableOpacity 
                     style={[styles.button, styles.primary]}
                     onPress={() => Alert.alert("Hello") }
                 >
                     <DiscordLogo size={24} color={"#FFF"} />
-                    <Text style={{ marginLeft: 10, color: "#FFF", fontWeight: "bold" }}>COMUNIDADE NO DISCORD</Text>
+                    <Text style={styles.buttonText}>
+                        COMUNIDADE NO DISCORD
+                    </Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity 
@@ -117,63 +117,48 @@ export function Video( props : VideoProps ) {
                     onPress={() => Alert.alert("", "Hello") }
                 >
                     <Lightning size={24} color={"#81D8F7"} />
-                    <Text style={{ marginLeft: 10, color: "#81D8F7", fontWeight: "bold" }}>ACESSE O DESAFIO</Text>
+                    <Text style={styles.buttonText}>
+                        ACESSE O DESAFIO
+                    </Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={{ flex: 1, marginTop: 64 }}>
-                    <View style={{ flex: 1, flexDirection: "row", minHeight: 140 }}>
-
-                    <View style={{ paddingRight: 23, paddingLeft: 23, backgroundColor: "#015F43", justifyContent: "center" }}>
+                <TouchableOpacity style={styles.buttonDownloadFiles}>
+                    <View style={styles.buttonLeftIcon}>
                         <FileArrowDown size={39} color="#FFF"/>
                     </View>
 
-                    <View style={{ flex: 1, flexDirection: "column", padding: 16, justifyContent: "space-around" }}>
-                        <Text 
-                            style={{ fontSize: 22, fontWeight: "bold", color: "#E1E1E6" }}
-                        >
+                    <View style={styles.buttonInfo}>
+                        <Text style={styles.buttonInfoTitle}>
                             Material Complementar
                         </Text>
-                        <Text
-                            style={{ fontSize: 16, color: "#E1E1E6" }}
-                        >
+                        <Text style={styles.buttonInfoDescription}>
                             Acesse o material complementar para acelerar o seu desenvolvimento
                         </Text>
                     </View>
 
-                    <View style={{ paddingRight: 23, paddingLeft: 23, justifyContent: "center" }}>
+                    <View style={styles.buttonRightIcon}>
                         <CaretRight size={24} color="#81D8F7"/>
-                    </View>
-
                     </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={{ flex: 1, marginTop: 16 }}>
-                    <View style={{ flex: 1, flexDirection: "row", minHeight: 140 }}>
-
-                    <View style={{ paddingRight: 23, paddingLeft: 23, backgroundColor: "#015F43", justifyContent: "center" }}>
+                <TouchableOpacity style={[styles.buttonDownloadFiles, { marginTop: 16 }]}>
+                    <View style={styles.buttonLeftIcon}>
                         <ImagePhosphor size={39} color="#FFF"/>
                     </View>
 
-                    <View style={{ flex: 1, flexDirection: "column", padding: 16, justifyContent: "space-around" }}>
-                        <Text 
-                            style={{ fontSize: 22, fontWeight: "bold", color: "#E1E1E6" }}
-                        >
+                    <View style={styles.buttonInfo}>
+                        <Text style={styles.buttonInfoTitle}>
                             Wallpapers exclusivos
                         </Text>
-                        <Text
-                            style={{ fontSize: 16, color: "#E1E1E6" }}
-                        >
+                        <Text style={styles.buttonInfoDescription}>
                             Baixe wallpapers exclusivos do Ignite Lab e personalize a sua máquina
                         </Text>
                     </View>
 
-                    <View style={{ paddingRight: 23, paddingLeft: 23, justifyContent: "center" }}>
+                    <View style={styles.buttonRightIcon}>
                         <CaretRight size={24} color="#81D8F7"/>
                     </View>
-
-                    </View>
                 </TouchableOpacity>
-
             </View>
         </>
     )

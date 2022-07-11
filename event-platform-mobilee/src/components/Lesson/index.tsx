@@ -1,27 +1,29 @@
 import { View, Text, TouchableOpacity, TouchableOpacityProps, Alert } from "react-native"
 import { CheckCircle, Lock } from "phosphor-react-native"
-import { format, isPast } from "date-fns";
+import { format } from "date-fns";
 import ptBR from 'date-fns/locale/pt-BR'
 
 import { styles } from "./styles"
 
 interface LessonProps extends TouchableOpacityProps{
-    type: 'live' | 'class';
     availableAt: Date;
+    type: 'live' | 'class';
     title: string;
     slug: string;
+    isLessonAvailable: boolean;
 }
 
-export function Lesson({ type, availableAt, title, slug, ...props}: LessonProps) {
-    const isLessonAvailable = isPast(availableAt)
+export function Lesson({ isLessonAvailable, type, availableAt, title, slug, ...props}: LessonProps) {
     
     const availableDateFormatted = format(availableAt, "EEEE' • 'd' de 'MMMM' • 'k'h'mm", {
         locale: ptBR
     })
     
+    const setOpacity = !isLessonAvailable ? 0.5 : 1
+
     return (
         <TouchableOpacity 
-            style={{ marginTop: 24 }} 
+            style={{ marginTop: 24, opacity: setOpacity }} 
             {...props}
         >
             <Text style={styles.releaseDataLesson}>
