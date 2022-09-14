@@ -1,11 +1,7 @@
-import { StyleSheet, Platform, StatusBar, Dimensions } from "react-native"
+import { StyleSheet, Platform, Dimensions } from "react-native"
+import { getStatusBarHeight } from 'react-native-iphone-x-helper'
 
 export const layout = StyleSheet.create({
-    safeArea: {
-        flex: 1, 
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-        
-    },
     container: {
         flex: 1,
         justifyContent: "flex-start",
@@ -13,13 +9,13 @@ export const layout = StyleSheet.create({
         position: "relative"
     },
     header: {
+        backgroundColor: "#09090A",
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        paddingTop: 16,
+        paddingTop: getStatusBarHeight(),
         paddingBottom: 16,
-        paddingLeft: 24,
-        paddingRight: 24,
+        paddingHorizontal: 24,
     },
     content: {
         flex: 1,

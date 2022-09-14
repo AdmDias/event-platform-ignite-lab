@@ -1,8 +1,8 @@
-/*export declare global{
+export declare global{
     namespace ReactNavigation {
-        interface RootStackParamList {
+        interface RootParamList {
             Subscribe: undefined;
             Platform: undefined;
         };
      }
-} */
+}

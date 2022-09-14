@@ -1,16 +1,21 @@
 import { useState } from "react"
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Image, ImageBackground, Alert } from "react-native"
-import { EventLogo, bgBlur, bgCodeSnippet, reactJSIcon } from '../../utils/assets'
+import { useNavigation } from "@react-navigation/native";
+import { View, TextInput, TouchableOpacity, ScrollView, Image, ImageBackground, Alert } from "react-native"
 import { useCreateSubscriberMutation } from "../../graphql/generated";
+import { EventLogo, bgBlur, bgCodeSnippet, reactJSIcon } from '../../utils/assets'
+//import SafeAreaView from 'react-native-safe-area-view';
+//import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import { setItem } from "../../asyncstorage/storage";
 import { Footer } from "../../components/Footer"
-import SafeAreaView from 'react-native-safe-area-view';
 
 import { layout, styles } from './styles'
+import { Heading, VStack, Text, Input, Icon, useTheme, Pressable, Button } from "native-base";
+import { Envelope, UserCircle } from "phosphor-react-native";
 
-export function Subscribe({ navigation }: any) {
-
-    const [usernameHover, setUserNameHover] = useState(false)
-    const [useremailHover, setUserEmailHover] = useState(false)
+export function Subscribe() {
+    const navigation = useNavigation()
+    const { colors } = useTheme()
     
     const [name, setName] = useState<string>('')
     const [email, setEmail] = useState<string>('')
@@ -18,103 +23,156 @@ export function Subscribe({ navigation }: any) {
     const [createSubscriber, { loading }] = useCreateSubscriberMutation()
 
     async function handleSubscribe() {
-
         await createSubscriber({
             variables: {
                 name,
                 email
             },
-            onCompleted(data) {
-                if (data) navigation.navigate('Platform')
+            onCompleted({ createSubscriber }) {
+                if (createSubscriber?.id) {
+                    setItem('@USERID', createSubscriber.id)
+                    navigation.navigate('Platform')
+                }
             },
             onError(error) {
                 Alert.alert("Erro", error.message)
             },
         })
-
-        //await new Promise((resolve) => setTimeout((resolve), 2000))
-        
     }
 
+
+
     return (
-        <SafeAreaView style={layout.safeArea}>
-            <ScrollView>
-                <View style={layout.container}>
-                    <ImageBackground source={bgBlur} style={layout.bgImage}>
-                        <ImageBackground source={reactJSIcon} style={layout.bgImage}>
-                            <View style={layout.header}>
-                                <View style={{ flex: 1, marginTop: 40, marginBottom: 24 }}>
-                                    <EventLogo />
-                                </View>
+        <ScrollView>
+            <VStack 
+                flex={1}
+                bg='gray.700'    
+            >
+                <ImageBackground source={bgBlur} style={layout.bgImage}>
+                    <ImageBackground source={reactJSIcon} style={layout.bgImage}>
+                        <VStack
+                            w='full'
+                            alignItems='center'
+                            pt={10}
+                            space={2}
+                        >
+                            <EventLogo />
 
-                                <Text style={styles.title}>
-                                    Construa uma
+                            <Text color='gray.100' fontSize='3xl' textAlign='center'>
+                                Construa uma {'\n'}
+                                <Text color='blue.400' fontSize='3xl' fontWeight='bold'>
+                                    aplicação completa {'\n'}
                                 </Text>
+                                do zero, com <Text color='blue.400' fontWeight='bold'>React JS</Text>
+                            </Text>
 
-                                <Text style={[styles.title, styles.textStrong]}>
-                                    aplicação completa
-                                </Text>
+                            <Text
+                                color='gray.200'
+                                fontSize='xl'
+                                textAlign='center'
+                                p={6}
+                            >
+                                Em apenas uma semana você vai dominar na prática uma das tecnologias mais utilizadas e 
+                                com alta demanda para acessar as melhores oportunidades do mercado.
+                            </Text>
 
-                                <Text style={styles.title}>
-                                    do zero, com <Text style={styles.textStrong}>React JS</Text>
-                                </Text>
+                        </VStack>
+                        <VStack
+                            bg='gray.700'
+                            borderColor='gray.400'
+                            borderTopWidth={1}
+                            borderBottomWidth={1}
+                            py={8}
+                            px={7}
+                            space={2}
+                        >
+                            <Heading
+                                color='gray.100'
+                                fontSize='lg'
+                            >
+                                Inscreva-se gratuitamente
+                            </Heading>
 
-                                <Text style={styles.description}>
-                                    Em apenas uma semana você vai dominar na prática uma das tecnologias mais utilizadas e 
-                                    com alta demanda para acessar as melhores oportunidades do mercado.
-                                </Text>
+                            <Input
+                                py={4}
+                                placeholder="Seu nome completo"
+                                onChangeText={setName}
+                                color='gray.100'
+                                size='md'
+                                borderWidth={1}
+                                borderColor='gray.700'
+                                _focus={{
+                                    borderColor: '#00B37E',
+                                    bg: 'gray.700'
+                                }}
+                                InputLeftElement={
+                                    <Icon
+                                        as={
+                                            <UserCircle size={24} color={colors.gray[300]} />
+                                        }
+                                        ml={4}
+                                    />
+                                }
+                            />
 
-                            </View>
-                            <View style={layout.subscribe_section}>
-                                <Text style={{ color: "#E1E1E6", fontWeight: "bold", fontSize: 18, marginBottom: 21 }}>
-                                    Inscreva-se gratuitamente
-                                </Text>
+                            {/*  
+                                CRIAR ESSES INPUTS COMO UM COMPONENT, 
+                                AI DA PARA DEIXAR A QUESTAO DO FOCUS DINAMICO, 
+                                SEM TER Q DECLARA 'HOVER' STATE PAR CADA INPUT  
+                            */}
 
-                                <TextInput 
-                                    style={{ ...styles.input, borderColor: usernameHover ? '#00B37E' : '#09090A' }}
-                                    textContentType="username"
-                                    placeholder="Seu nome completo"
-                                    placeholderTextColor="#8D8D99"
-                                    onFocus={() => setUserNameHover(true)}
-                                    onBlur={() => setUserNameHover(false)}
-                                    value={name}
-                                    onChangeText={(value) => setName(value)}
-                                />
+                            <Input
+                                py={4}
+                                placeholder="Seu nome completo"
+                                onChangeText={setEmail}
+                                color='gray.100'
+                                size='md'
+                                borderWidth={1}
+                                borderColor='gray.700'
+                                _focus={{
+                                    borderColor: '#00B37E',
+                                    bg: 'gray.700'
+                                }}
+                                InputLeftElement={
+                                    <Icon
+                                        as={
+                                            <Envelope size={24} color={colors.gray[300]} />
+                                        }
+                                        ml={4}
+                                    />
+                                }
+                            />
 
-                                {/*  
-                                    CRIAR ESSES INPUTS COMO UM COMPONENT, 
-                                    AI DA PARA DEIXAR A QUESTAO DO FOCUS DINAMICO, 
-                                    SEM TER Q DECLARA 'HOVER' STATE PAR CADA INPUT  
-                                */}
-
-                                <TextInput 
-                                    style={{ ...styles.input, borderColor: useremailHover ? '#00B37E' : '#09090A' }}
-                                    textContentType="emailAddress"
-                                    placeholder="Digite seu email"
-                                    placeholderTextColor="#8D8D99"
-                                    onFocus={() => setUserEmailHover(true)}
-                                    onBlur={() => setUserEmailHover(false)}
-                                    value={email}
-                                    onChangeText={(value) => setEmail(value)}
-                                />
-
-                                <TouchableOpacity 
-                                    style={styles.btnSubmit}
-                                    onPress={handleSubscribe}
-                                    disabled={loading}
-                                >
-                                    <Text style={{ color: "#FFF", fontWeight: "bold" }}>GARANTIR MINHA VAGA</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </ImageBackground>
-                        <View style={{ flex: 1, alignItems: "center", marginTop: 16 }}>
-                            <Image source={bgCodeSnippet} />
-                        </View>
+                            <Button
+                                p={4}
+                                mt={2}
+                                w='full'
+                                bg='#00B37E'
+                                size='lg'
+                                rounded='sm'
+                                _pressed={{
+                                    bg: '#00B49F'
+                                }}
+                                onPress={handleSubscribe}
+                                _text={{
+                                    fontWeight:'bold',
+                                    fontSize:'sm',
+                                    color:'gray.100'
+                                }}
+                                isLoading={loading}
+                            >
+                                GARANTIR MINHA VAGA
+                            </Button>
+                        </VStack>
                     </ImageBackground>
-                    <Footer />
-                </View>
-            </ScrollView>
-        </SafeAreaView>
+                    <View style={{ flex: 1, alignItems: "center", marginTop: 16 }}>
+                        <Image source={bgCodeSnippet} />
+                    </View>
+                </ImageBackground>
+                <Footer />
+            </VStack>
+        </ScrollView>
+
     )
 }
 
