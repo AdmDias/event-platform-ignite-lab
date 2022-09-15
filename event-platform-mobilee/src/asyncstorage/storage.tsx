@@ -1,6 +1,6 @@
 import { Toast } from "native-base";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ErrorToast } from "../components/ErrorToast";
+import { CustomToast } from "../components/CustomToast";
 
 const setItem = async(key: string, value: string | undefined) => {
     try {
@@ -12,7 +12,7 @@ const setItem = async(key: string, value: string | undefined) => {
     }catch(error){
         Toast.show({
             duration: 3000,
-            render: () => <ErrorToast message='Erro ao salvar os dados no dispositivo'/>
+            render: () => <CustomToast type="error" message='Erro ao salvar os dados no dispositivo'/>
         })
     }
 }
@@ -23,7 +23,7 @@ const getItem = async(key: string) => {
     }catch(error){
         Toast.show({
             duration: 3000,
-            render: () => <ErrorToast message='Erro ao resgatar os dados no dispositivo'/>
+            render: () => <CustomToast type="error" message='Erro ao resgatar os dados no dispositivo'/>
         })
     }
 }
@@ -34,7 +34,7 @@ const removeItem = async(key: string) => {
     }catch(error){
         Toast.show({
             duration: 3000,
-            render: () => <ErrorToast message='Erro ao remover os dados no dispositivo'/>
+            render: () => <CustomToast type="error" message='Erro ao remover os dados no dispositivo'/>
         })
     }
 }

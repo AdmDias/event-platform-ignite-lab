@@ -9,6 +9,7 @@ const NATIVEBASETHEME = extendTheme({
       500: '#29292E',
       400: '#323238',
       300: '#7C7C8A',
+      250: '#8D8D99',
       200: '#C4C4CC',
       100: '#E1E1E6'
     },

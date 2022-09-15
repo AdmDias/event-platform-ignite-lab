@@ -1,69 +1,107 @@
-import { useRef, useState } from "react";
-import { ScrollView, View, Text, TouchableOpacity } from "react-native";
+import { useMemo, useRef, useState } from "react";
+import { gestureHandlerRootHOC } from 'react-native-gesture-handler'
+import {
+  Platform as DeviceOS,
+  ScrollView
+} from "react-native";
 import { useGetLessonsQuery } from "../../graphql/generated";
 import { EventLogo } from "../../utils/assets/svg/EventLogo";
-import { List, X } from "phosphor-react-native";
-//import SafeAreaView from "react-native-safe-area-view";
-import { layout, styles } from './styles' 
+import { List } from "phosphor-react-native";
 
 import { Video } from "../../components/Video";
 import { Sidenav } from "../../components/Sidenav";
 import { Footer } from "../../components/Footer";
+import { HStack, VStack, Button, useTheme } from "native-base";
+import { getStatusBarHeight } from "react-native-iphone-x-helper";
+import BottomSheet from "@gorhom/bottom-sheet";
+import { SimpleGuide } from "../../components/SimpleGuide";
 
-export function Platform(){
-  const [isSideNavOpen, setIsSideNavOpen] = useState(false)
-  const [currentSlug, setCurrentSlug] = useState<string | null>(null) //useState('nlw-return-impulse-stage-01')
+function Platform() {
+  const { colors } = useTheme();
   const scrollRef = useRef<any>();
-  
-  const { data: lessons, loading: isLoadingLessons } = useGetLessonsQuery()
+
+  const bottomsheetRef = useRef<BottomSheet>(null);
+  const snapPoints = useMemo(() => [1, '70%'], []);
+
+  const [currentSlug, setCurrentSlug] = useState<string | null>(null); //useState('nlw-return-impulse-stage-01')
+
+  const bottomSheetExpand = () => bottomsheetRef.current?.expand();
+  const bottomSheetClose = () => bottomsheetRef.current?.close();
+
+  const { data: lessons, loading: isLoadingLessons } = useGetLessonsQuery();
 
   return (
-      <>
-        <View style={layout.header}>
-          <EventLogo width={"167"} height={"24"} />
+    <>
+      <HStack
+        w="full"
+        // pt={DeviceOS.OS === "ios" ? "11" : "10"}
+        pt={getStatusBarHeight(true) / 4}
+        px={4}
+        bg="gray.600"
+        justifyContent="space-between"
+        alignItems="center"
+      >
+        <EventLogo width={167} height={24} />
 
-          <View style={styles.navigation}>
-            <Text style={{ fontSize: 14, color: "#E1E1E6" }}>Aulas</Text>
+        <Button
+          variant="unstyled"
+          _text={{
+            color: "gray.100",
+            fontSize: "sm",
+            textTransform: "uppercase",
+          }}
+          endIcon={
+            <List size={32} color="#81D8F7" />
+          }
+          _pressed={{
+            opacity: 0.5,
+          }}
+          onPress={bottomSheetExpand}
+        >
+          Aulas
+        </Button>
 
-            <TouchableOpacity 
-              style={{ padding: 4 }}
-              onPress={() => setIsSideNavOpen(!isSideNavOpen) }
-            >
-              {
-                isSideNavOpen ? <X size={32} color="#81D8F7" /> : <List size={32} color="#81D8F7" />
-              }
-                
-            </TouchableOpacity>
+      </HStack>
 
-          </View>
-        </View>
-        <ScrollView ref={scrollRef}>
-            <View style={layout.container}>
-                <View style={layout.content}>
-                  { 
-                    currentSlug ? <Video lessonSlug={currentSlug} /> 
-                    : 
-                    (
-                      <View style={{ flex: 1, alignItems: 'center' }}>
-                          <Text style={{ fontSize: 18, fontWeight: "bold", color: "#E1E1E6"}}>Bem-vindo</Text>
-                          <Text style={{ fontSize: 18, fontWeight: "bold", color: "#E1E1E6"}}>Assista a todas as aulas do evento</Text>
-                          <Text style={{ fontSize: 18, fontWeight: "bold", color: "#E1E1E6"}}>Basta clicar em 'Aulas' no canto superior direito</Text>
-                          <Text style={{ fontSize: 18, fontWeight: "bold", color: "#E1E1E6"}}>E escolher a aula desejada!</Text>
-                      </View>
-                    )
-                  }
-                  <Sidenav
-                    scrollViewRef = {scrollRef}
-                    isSideNavOpen={isSideNavOpen}
-                    lessons={lessons}
-                    isLoadingLessons={isLoadingLessons}
-                    onOpenSideNav={setIsSideNavOpen}
-                    onChangeCurrentSlug={setCurrentSlug}
-                  />
-                </View>
-                <Footer />
-            </View>
+      <VStack
+        flex={1}
+        bg="gray.700"
+      >
+        <ScrollView ref={scrollRef} >
+          {
+            currentSlug ? <Video lessonSlug={currentSlug} /> : <SimpleGuide />
+          }
         </ScrollView>
-      </>
-  )
+
+        <Footer />
+        
+        <BottomSheet
+          ref={bottomsheetRef}
+          index={-1}
+          snapPoints={snapPoints}
+          backgroundStyle={{
+            backgroundColor: colors.gray[500],
+          }}
+          handleStyle={{
+            backgroundColor: colors.gray[500],
+            // marginHorizontal: 20
+          }}
+          handleIndicatorStyle={{
+            backgroundColor: colors.gray[100],
+          }}
+          enablePanDownToClose
+        >
+          <Sidenav
+            scrollViewRef={scrollRef}
+            lessons={lessons}
+            isLoadingLessons={isLoadingLessons}
+            onSelectLesson={bottomSheetClose}
+            onChangeCurrentSlug={setCurrentSlug}
+          />
+        </BottomSheet>
+      </VStack>
+    </>
+  );
 }
+
+export default gestureHandlerRootHOC(Platform)

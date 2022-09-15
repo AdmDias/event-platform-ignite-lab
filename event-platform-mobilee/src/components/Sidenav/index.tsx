@@ -1,4 +1,6 @@
-import { View, Text, ScrollView } from "react-native"
+//import { View, Text } from "react-native"
+import { VStack, Text, Heading, Divider } from "native-base";
+import { ScrollView } from "react-native-gesture-handler";
 import { GetLessonsQuery } from "../../graphql/generated"
 import { isPast } from "date-fns";
 import { Lesson } from "../Lesson"
@@ -7,37 +9,39 @@ import { styles } from "./styles"
 
 interface SidenavProps {
     scrollViewRef: any;
-    isSideNavOpen: boolean;
     lessons: GetLessonsQuery | undefined;
     isLoadingLessons: boolean;
-    onOpenSideNav: (display: boolean) => void;
+    onSelectLesson: () => void | undefined;
     onChangeCurrentSlug: (slug: string) => void;
 }
 
 export function Sidenav({ 
-    isSideNavOpen, 
     scrollViewRef, 
     lessons,
     isLoadingLessons,
-    onOpenSideNav, 
+    onSelectLesson, 
     onChangeCurrentSlug 
 } : SidenavProps) {
 
-    const setDisplay = isSideNavOpen ? 'flex' : 'none'
-
     return (
-        <View style={[styles.sidenav, { display: setDisplay } ]}>
-            <ScrollView nestedScrollEnabled>
+        <VStack 
+            p={6}
+            bg='gray.500'
+        >
+            <ScrollView showsVerticalScrollIndicator={false}>
                 {
                     isLoadingLessons ? (
                         <Text style={styles.title}> Carregando... </Text>
                     ):(
                         <>
-                            <Text style={styles.title}>
+                            <Heading
+                                color='white'
+                            >
                                 Cronograma de aulas
-                            </Text>
+                            </Heading>
 
-                            <View style={styles.lessonsContainer}/> 
+                            <Divider mt={6} color='gray.500' />
+
                             {
                                 lessons?.lessons.map((lesson) => {
                                     const isLessonAvailable = isPast(new Date(lesson.availableAt))
@@ -50,9 +54,12 @@ export function Sidenav({
                                             slug={lesson.slug}
                                             isLessonAvailable={isLessonAvailable}
                                             disabled={!isLessonAvailable}
+                                            _pressed={{
+                                                opacity: 0.5
+                                            }}
                                             onPress={() => {
                                                 onChangeCurrentSlug(lesson.slug)
-                                                onOpenSideNav(false)
+                                                onSelectLesson()
                                                 scrollViewRef.current.scrollTo({ y: 0, animated: true });
                                             }}
                                         />
@@ -63,6 +70,6 @@ export function Sidenav({
                     )
                 }
             </ScrollView>
-        </View>
+        </VStack>
     )
 }
